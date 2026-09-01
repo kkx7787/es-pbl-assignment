@@ -1,0 +1,62 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "name_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "player_id": { "type": "keyword" },
+
+      "first_name": { "type": "keyword" },
+      "last_name":  { "type": "keyword" },
+      "name": {
+        "type": "text",
+        "analyzer": "name_analyzer",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
+      },
+
+      "club": {
+        "type": "keyword",
+        "fields": {
+          "text": { "type": "text" }
+        }
+      },
+      "league":      { "type": "keyword" },
+      "nationality": { "type": "keyword" },
+
+      "detailed_position":   { "type": "keyword" },
+      "secondary_positions": { "type": "keyword" },
+      "preferred_foot":      { "type": "keyword" },
+
+      "age":       { "type": "short" },
+      "height_cm": { "type": "short" },
+
+      "is_homegrown":   { "type": "boolean" },
+      "contract_until": { "type": "date" },
+      "market_value_eur": { "type": "long" },
+
+      "appearances": { "type": "short" },
+      "minutes":     { "type": "integer" },
+      "goals":       { "type": "short" },
+      "assists":     { "type": "short" },
+
+      "trait":      { "type": "keyword" },
+      "scout_note": { "type": "text" },
+      "tags":       { "type": "keyword" },
+
+      "is_synthetic": { "type": "boolean" }
+    }
+  }
+}

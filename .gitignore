@@ -1,2 +1,9 @@
 .idea
+.DS_Store
 docker
+
+# 6,000건 전체 bulk 파일만 제외한다. generated/ 전체를 제외하면 안 된다.
+# sample-30.ndjson과 generation-summary.json은 제출물이다.
+data/pbl-data-template/generated/scout-players-2627-v1-6000.ndjson
+
+__pycache__/

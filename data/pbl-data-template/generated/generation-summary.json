@@ -1,0 +1,110 @@
+{
+  "index": "scout-players-2627-v1",
+  "document_count": 6000,
+  "seed": 20262027,
+  "id_field": "player_id",
+  "files": {
+    "bulk": "scout-players-2627-v1-6000.ndjson",
+    "sample": "scout-players-2627-v1-sample-30.ndjson"
+  },
+  "field_kinds": [
+    {
+      "name": "player_id",
+      "kind": "id"
+    },
+    {
+      "name": "first_name",
+      "kind": "choice"
+    },
+    {
+      "name": "last_name",
+      "kind": "choice"
+    },
+    {
+      "name": "name",
+      "kind": "template"
+    },
+    {
+      "name": "club",
+      "kind": "choice"
+    },
+    {
+      "name": "league",
+      "kind": "weighted_choice"
+    },
+    {
+      "name": "nationality",
+      "kind": "choice"
+    },
+    {
+      "name": "detailed_position",
+      "kind": "choice"
+    },
+    {
+      "name": "secondary_positions",
+      "kind": "tags"
+    },
+    {
+      "name": "preferred_foot",
+      "kind": "weighted_choice"
+    },
+    {
+      "name": "age",
+      "kind": "integer"
+    },
+    {
+      "name": "height_cm",
+      "kind": "integer"
+    },
+    {
+      "name": "is_homegrown",
+      "kind": "boolean"
+    },
+    {
+      "name": "contract_until",
+      "kind": "date"
+    },
+    {
+      "name": "market_value_eur",
+      "kind": "integer"
+    },
+    {
+      "name": "appearances",
+      "kind": "integer"
+    },
+    {
+      "name": "minutes",
+      "kind": "integer"
+    },
+    {
+      "name": "goals",
+      "kind": "integer"
+    },
+    {
+      "name": "assists",
+      "kind": "integer"
+    },
+    {
+      "name": "trait",
+      "kind": "choice"
+    },
+    {
+      "name": "scout_note",
+      "kind": "template"
+    },
+    {
+      "name": "tags",
+      "kind": "tags"
+    },
+    {
+      "name": "is_synthetic",
+      "kind": "boolean"
+    }
+  ],
+  "generated_at": "deterministic-from-seed",
+  "fixed_document_count": 0,
+  "settings_sha256": "B15216576386C24A0A7F8A9620B09C4C6C3833CF1A67475A82F418EBA2ABD6BB",
+  "bulk_sha256": "64E0CEEF0E2224178B599A6CE1299B64036BD6111DA0C983E5E77711276128DA",
+  "mapping_sha256": "69AE6B74251E9B86C73661EAD16E3176293E577C9822806AE822902DBF18C054",
+  "generator": "macos/pbl_generator.py (generate-data.ps1 포팅본)"
+}

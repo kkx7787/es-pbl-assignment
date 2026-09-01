@@ -1,0 +1,12 @@
+# library-books를 자신의 index 이름으로 바꾼 뒤 Kibana Dev Tools에서 실행합니다.
+GET /library-books/_count
+
+GET /library-books/_search
+{
+  "size": 0,
+  "aggs": {
+    "category_count": { "terms": { "field": "category", "size": 20 } },
+    "status_count": { "terms": { "field": "status", "size": 20 } },
+    "year_range": { "stats": { "field": "published_year" } }
+  }
+}
