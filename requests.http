@@ -1,0 +1,168 @@
+# PL Scout 26/27 — 개인 검색 요청 모음
+# index: scout-players-2627-v1 / alias: scout-players-2627
+# 요청 하나만 Kibana Dev Tools Console에 복사해 실행한다. 파일 전체를 실행하지 않는다.
+# [실행됨] 표시가 없는 요청은 아직 돌리지 않았다.
+
+### V1-T09-P · 실제 CAT 요청, 생성 후 mapping 확인   [실행됨 2026-09-01]
+GET /_cat/nodes?v
+GET /_cluster/health
+GET /_cat/indices/scout-players-2627-v1?v
+
+### V1-T12-P · 존재 확인 → 없을 때만 생성 → mapping/shard 확인   [실행됨 2026-09-01]
+# 1) 먼저 존재 여부를 본다. 있으면 아래 PUT을 실행하지 않는다.
+GET /scout-players-2627-v1
+
+# 2) 없을 때만. body 전체는 elasticsearch/index-create.json과 같다.
+PUT /scout-players-2627-v1
+< ./elasticsearch/index-create.json
+
+# 3) alias 연결
+PUT /scout-players-2627-v1/_alias/scout-players-2627
+
+# 4) 확인
+GET /scout-players-2627-v1/_mapping
+GET /_cat/shards/scout-players-2627-v1?v
+
+### V1-T13-P · 개인 검색어 3개를 실제 text field 기준으로 분석   [미실행 — 3교시에서 진행]
+POST /scout-players-2627/_analyze
+{ "analyzer": "standard", "text": "왼발 LW 자원. 강점은 측면 돌파." }
+
+### V1-T14-P · 미사용 ID 확인 → create → GET → update → DELETE → count   [미실행 — 4교시 이후 진행]
+# 출발 count를 먼저 기록하고, 끝나면 같은 값으로 돌아왔는지 확인한다.
+GET /scout-players-2627/_count
+
+### V1-T16-P · count → 분류 terms → 숫자 stats → 결측 확인   [실행됨 2026-09-01]
+GET /scout-players-2627/_count
+
+POST /scout-players-2627/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_league":   { "terms": { "field": "league", "size": 12 } },
+    "by_position": { "terms": { "field": "detailed_position", "size": 12 } },
+    "by_foot":     { "terms": { "field": "preferred_foot", "size": 5 } },
+    "homegrown":   { "terms": { "field": "is_homegrown" } }
+  }
+}
+
+POST /scout-players-2627/_search
+{
+  "size": 0,
+  "aggs": {
+    "age":     { "stats": { "field": "age" } },
+    "value":   { "stats": { "field": "market_value_eur" } },
+    "minutes": { "stats": { "field": "minutes" } },
+    "no_secondary": { "missing": { "field": "secondary_positions" } },
+    "no_tags":      { "missing": { "field": "tags" } }
+  }
+}
+
+### V1-T16-P 선택 · pipeline simulate (판단 근거용, 적용하지 않음)   [실행됨 2026-09-01]
+# 결과: 출력이 입력과 동일 → 생성 단계에서 이미 만들어진 값이라 pipeline이 바꿀 것이 없음
+POST /_ingest/pipeline/_simulate
+{
+  "pipeline": {
+    "description": "후보: name 재조립 + club 공백 정리",
+    "processors": [
+      { "set":  { "field": "name", "value": "{{{first_name}}} {{{last_name}}}" } },
+      { "trim": { "field": "club" } }
+    ]
+  },
+  "docs": [ { "_index": "scout-players-2627-v1", "_id": "P-0001", "_source": { "first_name": "Niall", "last_name": "Renner", "name": "Niall Renner", "club": "Kingsmere FC" } } ]
+}
+
+# dynamic:strict가 pipeline이 만든 새 field를 거부하는지 확인
+# 결과: strict_dynamic_mapping_exception — mapping을 먼저 고치지 않으면 field를 늘릴 수 없음
+POST /_ingest/pipeline/_simulate
+{
+  "pipeline": { "processors": [ { "set": { "field": "contract_year", "value": "2027" } } ] },
+  "docs": [ { "_index": "scout-players-2627-v1", "_source": { "player_id": "X" } } ]
+}
+
+# ===================== Day 3 =====================
+
+### V1-T17-P · Search API 기본 — 전체 조회와 응답 구조   [실행됨 2026-09-02]
+# hits.total.value=6000 (relation eq) / 반환 5건. total은 일치 건수, hits 길이는 가져온 페이지다.
+POST /scout-players-2627/_search
+{
+  "size": 5,
+  "query": { "match_all": {} }
+}
+
+### V1-T17-P · 반환 field 축소 — 검색 결과 카드   [실행됨 2026-09-02]
+# 식별자 + 제목 + 판단 정보만. scout_note는 카드에 안 넣고 상세/highlight로 미룬다.
+POST /scout-players-2627/_search
+{
+  "size": 3,
+  "_source": ["player_id", "name", "club", "detailed_position", "preferred_foot"],
+  "query": { "match_all": {} }
+}
+
+### V1-T17-P · 정렬 + 동점 대비 2차 key   [실행됨 2026-09-02]
+# market_value_eur는 6,000건 모두 값이 달라 동점이 없지만, age는 28세만 302건이라 2차 key가 필요하다.
+POST /scout-players-2627/_search
+{
+  "size": 10,
+  "_source": ["player_id", "name", "market_value_eur"],
+  "query": { "match_all": {} },
+  "sort": [ { "market_value_eur": "asc" }, { "player_id": "asc" } ]
+}
+
+### V1-T18-P · 전문 검색 (Q1) — 왼발 측면 돌파   [실행됨 2026-09-02] total=169
+# scout_note는 text. operator를 명시하지 않으면 기본 OR라 '왼발'만 걸린 문서까지 2,019건이 나온다.
+# 세 token을 모두 요구해야 질문 의도와 맞는다.
+POST /scout-players-2627/_search
+{
+  "size": 10,
+  "_source": ["player_id", "name", "club", "detailed_position", "preferred_foot"],
+  "query": {
+    "match": { "scout_note": { "query": "왼발 측면 돌파", "operator": "and" } }
+  }
+}
+
+### V1-T18-P 비교 · 기본 OR로 두면 어떻게 되는가   [실행됨 2026-09-02] total=2019
+POST /scout-players-2627/_search
+{
+  "size": 3,
+  "_source": ["player_id", "scout_note"],
+  "query": { "match": { "scout_note": "왼발 측면 돌파" } }
+}
+
+### V1-T19-P · 정확 조건 (Q2) — 22세 이하·홈그로운·왼발·LW 소화   [실행됨 2026-09-02] total=35
+# age 동률이 대량(16세 등)이라 2차 정렬 key player_id가 반드시 필요하다.
+# secondary_positions는 배열이므로 term 하나로 배열 원소 포함 여부를 판정한다.
+POST /scout-players-2627/_search
+{
+  "size": 10,
+  "_source": ["player_id", "name", "club", "age", "detailed_position", "secondary_positions"],
+  "query": {
+    "bool": {
+      "filter": [
+        { "range": { "age": { "lte": 22 } } },
+        { "term":  { "is_homegrown": true } },
+        { "term":  { "preferred_foot": "왼발" } },
+        {
+          "bool": {
+            "should": [
+              { "term": { "detailed_position": "LW" } },
+              { "term": { "secondary_positions": "LW" } }
+            ],
+            "minimum_should_match": 1
+          }
+        }
+      ]
+    }
+  },
+  "sort": [{ "age": "asc" }, { "player_id": "asc" }]
+}
+
+### V1-T20-P · bool/filter + 정렬 (Q3) — 2028-06-30 이전 계약 만료   [실행됨 2026-09-02] total=1551
+# contract_until에 format을 지정하지 않아 "2028-06-30"과 ISO 8601을 모두 받는다.
+# lte는 날짜만 준 값을 그날의 마지막 순간으로 올림하므로 6/30 만료자가 포함된다.
+POST /scout-players-2627/_search
+{
+  "size": 10,
+  "_source": ["player_id", "name", "club", "contract_until", "market_value_eur"],
+  "query": { "range": { "contract_until": { "lte": "2028-06-30" } } },
+  "sort": [{ "contract_until": "asc" }, { "player_id": "asc" }]
+}

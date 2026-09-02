@@ -143,7 +143,10 @@
 - 개인(P) 트랙 T09~T12, T15는 완료. T16은 적재·count·분포·pipeline 판단까지 했고 아래가 남았다.
 - **T13-P 미완료**: 3입력 × 2분석방식 비교를 하지 않았다. `standard` 분석기로 1개 입력만 확인했다.
 - **T14-P 미완료**: CRUD 실습(생성·조회·수정·삭제, 삭제 후 `found:false`, 출발 count 복귀)을 하지 않았다.
-- **공통(C) 트랙 미실행**: S32 products 생성, S57 공통 10,000건 생성·적재를 하지 않았다. ES에 `products` index가 없다.
+- **공통(C) 트랙**: Day 2 시점에는 미실행이었다. Day 3 실습을 진행하며 뒤늦게 처리했다 —
+  `day-02/data/product-mapping.json`으로 `products` index를 만들고 `products-10000.ndjson`을 `_bulk`로 적재했다.
+  `_count` 10,000, `green`, 3 primary + 1 replica, category 8종 × 1,250건으로 `generation-summary.json`과 일치한다.
+  **아래 1~6절의 수치는 전부 개인 index `scout-players-2627`의 결과이며 공통 응답은 섞지 않았다.**
 - **미작성 파일**: `requests.http`, `data/generation-notes.md`, `docs/pipeline-decision.md`
 - `README.md`의 Day 2 절과 `SUBMISSION.md`의 이름·GitHub ID가 비어 있다.
 
