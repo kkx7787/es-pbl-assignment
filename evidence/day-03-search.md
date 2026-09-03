@@ -92,8 +92,19 @@
   `evidence/day-03-practice/`의 공통 문제 24개를 제공 코드 그대로 실행했다
   (`green`, 3 primary + 1 replica, category 8종 × 1,250건, `_count` 10,000).
   개인 문제 16개는 자기 index에서 실행했으며 공통 응답을 개인 증거로 제출하지 않았다.
+  **[2026-09-03]** Day 4가 `products` 20,000건을 기준으로 해서 같은 생성기·같은 seed로
+  `-Count 20000` 재생성분 중 `P-10001`~`P-20000` 10,000건을 추가 적재했다(`docs.deleted: 0`, 순수 추가).
+  적재 후 실측은 전체 20,000 / `in_stock:false` 3,001 / `true` 16,999 / category 8종 각 2,500으로
+  Day 4 기준값과 일치한다. 1~4교시 공통 문제의 수치는 **10,000건 시점의 실제 결과**이므로 고치지 않았고,
+  각 문제지 상단에 그 사실을 적었다.
 - **Day 2 이월:** `V1-T13-P`(분석 3입력×2방식), `V1-T14-P`(CRUD)는 미실행이며
   `requests.http`에 `[미실행]`으로 표시했다. `data/generation-notes.md`,
   `docs/pipeline-decision.md`는 아직 작성하지 않았다.
-- **미검증:** 강사 배포 PowerShell 생성기로 돌린 결과와 macOS 포팅본 결과의 바이트 동일성은
-  `pwsh` 미설치로 교차 검증하지 못했다.
+- **미검증이었으나 해소됨 [2026-09-03]:** macOS 포팅본의 .NET `System.Random(seed)` 재구현이
+  실제 PowerShell 생성기와 같은 결과를 내는지 확인하지 못하고 있었다.
+  강사 배포 `generate-products.ps1`을 같은 방식으로 포팅해 `-Count 10000 -Seed 9502026`으로 돌린 결과,
+  배포된 `products-10000.ndjson`과 **SHA256이 완전히 일치**했다
+  (`9847ffeb7ee4b7a20d4a98bc7d6d993ddd0dcdba5d94a113d41e4f29c6516575`).
+  맞추는 과정에서 두 가지를 확인했다 — PowerShell 파이프라인은 `Select-Object -First (식)`의 식을
+  데이터가 흐르기 전에 평가하고, `[int]` 캐스트는 버림이 아니라 은행가 반올림(round-half-to-even)이다.
+  같은 포팅본으로 `-Count 20000`을 만들면 Day 4 기준값(20,000 / 3,001 / 16,999 / 2,500)이 정확히 재현된다.
