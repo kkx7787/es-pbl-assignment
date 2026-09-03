@@ -161,14 +161,14 @@ Dashboard를 `D4 공통 상품 Dashboard - 이름`으로 저장한 뒤 Dashboard
 
 완료된 것
 
-- 6패널 배치와 제목 ✅
-- Control 추가, `전자기기` 선택 시 **6개 패널 전부 변화**, `Any` 복구로 20,000 회복 ✅
-- 저장 자체는 성공(Saved Objects에 dashboard 1건) ✅
-- 최종 상태 20,000, KQL·filter·Control 모두 초기화 ✅
-- 제목을 `D4 공통 상품 Dashboard - 한성민`으로 변경 ✅
-- 세 방식(Control·Filter·KQL) 전후 값 확인 — 3,001 / 8,088 모두 실측값과 일치 ✅
-- 목록에서 재열기 성공, 공통본·개인본 공존 확인 ✅
-- 캡처 5장 ✅
+- [x] 6패널 배치와 제목
+- [x] Control 추가, `전자기기` 선택 시 **6개 패널 전부 변화**, `Any` 복구로 20,000 회복
+- [x] 저장 자체는 성공(Saved Objects에 dashboard 1건)
+- [x] 최종 상태 20,000, KQL·filter·Control 모두 초기화
+- [x] 제목을 `D4 공통 상품 Dashboard - 한성민`으로 변경
+- [x] 세 방식(Control·Filter·KQL) 전후 값 확인 — 3,001 / 8,088 모두 실측값과 일치
+- [x] 목록에서 재열기 성공, 공통본·개인본 공존 확인
+- [x] 캡처 5장
 
 권장 보완
 

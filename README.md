@@ -1,6 +1,6 @@
 # PL Scout 26/27 — 프리미어리그 스카우팅 선수 검색
 
-> Day 1 문서입니다. mapping 확정, 데이터 적재, Dashboard 결과는 Day 2~5에 실제로 수행한 뒤 추가합니다.
+> Day 1~4 수행분까지 반영했습니다. 9절은 Day 5에 작성합니다.
 
 ---
 
@@ -48,7 +48,7 @@
   리그, 소속 구단, 주 포지션, 주발, 홈그로운 여부
 
 - **정렬 후보:**
-  나이(오름차순), 출전 시간(내림차순), 시장 가치, 계약 만료일(오름차순 — 곧 풀리는 순)
+  나이(오름차순), 출전 시간(내림차순), 시장 가치, 계약 만료일(오름차순, 곧 풀리는 순)
 
 ---
 
@@ -86,7 +86,9 @@ macOS(Apple Silicon) 기준이다. 강사 배포 실습 패키지는 PowerShell(
    seed가 `20262027`로 고정돼 있어 몇 번을 돌려도 바이트 단위로 같은 파일이 나온다.
 4. **검색 요청 실행** — 루트 `requests.http`를 열어 요청을 **하나씩** Kibana Console에 복사한다.
    파일 전체를 실행하지 않는다. `V1-T09-P`~`V1-T16-P`가 Day 2, `V1-T17-P`~`V1-T20-P`가 Day 3다.
-5. **Kibana Dashboard 확인** — Day 4에 작성
+5. **Kibana Dashboard 확인** — Kibana에서 Data View 두 개(`쇼핑몰 상품 데이터`, `PL 스카우팅 선수`)를
+   선택한 뒤 Dashboards 목록에서 `D4 공통 상품 Dashboard - 한성민`과
+   `D4 개인 미션 - PL 스카우팅 - 한성민`을 연다. 구성은 8절에 있다.
 
 ### 관련 파일
 
@@ -111,7 +113,7 @@ macOS(Apple Silicon) 기준이다. 강사 배포 실습 패키지는 PowerShell(
   실제 색인 `_count` = 6000, `_shards.failed: 0`, cluster `green`, 1 primary + 1 replica.
 - **데이터 생성 규칙과 seed:** `$Seed = 20262027`, `$DocumentCount = 6000`, `$SampleCount = 30`.
   23개 field를 `id`/`choice`/`weighted_choice`/`integer`/`date`/`boolean`/`tags`/`template` 규칙으로 만든다.
-  분포가 설정대로 나왔음을 집계로 확인했다 — `preferred_foot` 72:24:4 → 실측 71.7:24.5:3.7,
+  분포가 설정대로 나왔음을 집계로 확인했다. `preferred_foot` 72:24:4 → 실측 71.7:24.5:3.7,
   `is_homegrown` `TrueRatio 0.35` → 실측 33.9%, `secondary_positions` 결측 0.10 → 실측 9.8%.
 - **개인정보 미사용 확인:** 모든 선수 데이터가 합성이며 전 문서에 `is_synthetic: true`다.
   실존 선수의 이름·생년월일·계약 조건·이적료를 넣지 않았다.
@@ -153,17 +155,46 @@ bool 결합(`filter`/`should` + `minimum_should_match`), 정렬 2단(동률 대�
 
 ---
 
-## 이후 작성 예정
+## 8. Dashboard
 
-### 8. Dashboard — Day 4에 작성
+Kibana 9.5.0에서 Dashboard 두 개를 만들었다.
 
-- Dashboard 사용자:
-- 차트 1이 답하는 질문:
-- 차트 2가 답하는 질문:
-- control/filter 목적:
+| Dashboard | Data View | 구성 |
+|---|---|---|
+| `D4 공통 상품 Dashboard - 한성민` | `쇼핑몰 상품 데이터` (`products`, 20,000건) | 패널 6개 + category Control |
+| `D4 개인 미션 - PL 스카우팅 - 한성민` | `PL 스카우팅 선수` (`scout-players-2627`, 6,000건) | 패널 5개 + league Control |
 
-> Day 1 계획은 `docs/dashboard-plan.md`에 있습니다.
+### 개인 Dashboard
 
-### 9. AI Search 확장 판단 — Day 5에 작성
+- **사용자:** 하위 리그·유스 자원 영입을 검토하는 스카우팅 리서처
+- **판단:** 다음 이적시장에 누구를 먼저 보러 갈지. 어느 리그를 훑을지, 어느 구단에 접촉할지,
+  언제 계약이 풀리는 자원을 지금 봐 둘지를 정한다.
+
+| 패널 | 답하는 질문 | 차트 | 값 |
+|---|---|---|---|
+| 검토 대상 선수 | 후보 풀은 몇 명인가 | Metric | 6,000 |
+| 리그별 후보 분포 | 어느 리그에 몰려 있는가 | Bar (horizontal) | Serie A 932 ~ Premier League U21 498 |
+| 구단별 후보 수와 평균 몸값 | 어느 구단에 접촉할까 | Table | Harrowgate FC 638 / 45,294,954 |
+| 계약 만료 연도 분포 | 언제 풀리는가 | Bar (`1y`) | 2027 757 / 2028 1,584 / 2029 1,454 / 2030 1,465 / 2031 740 |
+| 주발 구성 | 왼발 자원이 얼마나 희소한가 | Donut | 오른발 4,304 / 왼발 1,472 / 양발 224 |
+
+- **Control:** `league` Options list. 리서처가 가장 자주 바꾸는 조건이 "어느 리그를 볼지"다.
+  `Premier League U21`을 선택하면 6,000 → 498이 되고 5개 패널이 함께 바뀐다. `Any`로 6,000이 복구된다.
+- **시간 범위:** `2027-01-01 ~ 2032-01-01`을 Dashboard에 저장했다.
+  Data View에 time field가 없어 문서를 거르지는 않지만, `contract_until` 날짜 차트의 x축 범위가
+  전역 시간 범위를 따르기 때문에 지정이 필요하다.
+
+### 해석 주의
+
+`contract_until` 연도별 분포는 계약 만료 시점이지 이적 시점이 아니다.
+2028년 1,584명은 그해에 협상 기회가 열리는 선수 수이며, 이적 성사 건수가 아니다.
+이 index에는 이적 사건 데이터가 없다.
+
+> 설계는 `evidence/day-04/dashboard-plan.md`, 테스트·개선 기록은 `evidence/day-04/dashboard-review.md`,
+> 교시별 실습 답안과 캡처 21장은 `evidence/day-04-practice/`에 있다.
+
+---
+
+## 9. AI Search 확장 판단 — Day 5에 작성
 
 - 적용 여부와 근거:

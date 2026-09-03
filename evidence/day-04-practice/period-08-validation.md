@@ -186,7 +186,7 @@ POST /scout-players-2627/_search
   현재 Kibana 9.5.0에 Dashboard PDF 메뉴가 없는 것은 정상이다.
 - `dashboard-plan.md` 경로: `evidence/day-04/dashboard-plan.md`
 - `dashboard-review.md` 경로: `evidence/day-04/dashboard-review.md`
-- 개인 저장소 commit SHA: `9c6533b` (`9c6533b27289dbd2c981232251dbfd3eac6744ac`)
+- 개인 저장소 commit SHA: `51792e0` (`51792e0d971e7dcde5481f6a3e2f350518436b2b`)
 - 미완료 또는 알려진 제한 사항:
   1. 선택 도전 5문제(2·4·5·6·8교시분) 미실행
   2. 개인 Dashboard의 `Store time with dashboard` 종료 시각이 `now`로 남은 공통 Dashboard 재현성 보완 권장

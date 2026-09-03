@@ -127,7 +127,7 @@ POST /scout-players-2627/_search
 - [x] filter/control이 관련 패널에 함께 적용된다 — Control 적용 시 5개 패널 전부 변화
 - [x] 저장 후 다시 열어도 같은 상태가 복구된다 — 목록에서 다시 열어 6,000과 5패널 확인
 - [x] 전체 화면 캡처를 저장했다 — `evidence/day-04-practice/p07-q01`, `p07-q03`, `p07-q04`
-- [x] 개인 저장소에 commit했다 — `9c6533b` (`9c6533b27289dbd2c981232251dbfd3eac6744ac`)
+- [x] 개인 저장소에 commit했다 — `51792e0` (`51792e0d971e7dcde5481f6a3e2f350518436b2b`)
 
 ## 8. 검증에서 배운 것 — 시간대
 

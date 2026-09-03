@@ -166,17 +166,17 @@ Gauge, Heatmap, Treemap, Tag cloud 중 하나가 자신의 질문에 정말 필�
 
 완료된 것
 
-- 패널 5개의 field·집계·차트·제목·배치 확정 ✅
-- 각 패널의 검증 기준값을 Dev Tools 집계로 확보 ✅
-- 공통본에서 바꿀 요소 5가지 정리 ✅
-- Control 설계(`league` Options list)와 검증 시나리오 ✅
-- 확장 차트 심사 후 **추가하지 않기로 결정** ✅
-- `D4 개인 미션 - PL 스카우팅 - 한성민` Dashboard 생성, 공통본 보존 ✅
-- 패널 5개 제작(Metric·Donut·Bar 2·Table), Data View `PL 스카우팅 선수` 연결 ✅
-- `league` Options list Control 추가 ✅
+- [x] 패널 5개의 field·집계·차트·제목·배치 확정
+- [x] 각 패널의 검증 기준값을 Dev Tools 집계로 확보
+- [x] 공통본에서 바꿀 요소 5가지 정리
+- [x] Control 설계(`league` Options list)와 검증 시나리오
+- [x] 확장 차트 심사 후 **추가하지 않기로 결정**
+- [x] `D4 개인 미션 - PL 스카우팅 - 한성민` Dashboard 생성, 공통본 보존
+- [x] 패널 5개 제작(Metric·Donut·Bar 2·Table), Data View `PL 스카우팅 선수` 연결
+- [x] `league` Options list Control 추가
 
-- 화면 값이 Dev Tools 기준값과 전부 일치 ✅
-- `Premier League U21` → **498**, `Any` → **6,000** 복구 확인 ✅
-- 캡처 3장 저장 ✅
+- [x] 화면 값이 Dev Tools 기준값과 전부 일치
+- [x] `Premier League U21` → **498**, `Any` → **6,000** 복구 확인
+- [x] 캡처 3장 저장
 
 제작 중 발견해 수정한 문제는 8교시 문제 3에 기록했다(`계약 만료 연도 분포`가 비어 보이던 건).

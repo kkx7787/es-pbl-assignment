@@ -71,17 +71,17 @@
 
 | Field | min | max | avg | 설정 범위 |
 |---|---|---|---|---|
-| `age` | 16 | 38 | 27.0 | 16~38 ✅ |
-| `market_value_eur` | 223,829 | 89,975,240 | 45,261,334 | 200,000~90,000,000 ✅ |
-| `minutes` | 0 | 3,419 | 1,686.2 | 0~3,420 ✅ |
+| `age` | 16 | 38 | 27.0 | 16~38 일치 |
+| `market_value_eur` | 223,829 | 89,975,240 | 45,261,334 | 200,000~90,000,000 일치 |
+| `minutes` | 0 | 3,419 | 1,686.2 | 0~3,420 일치 |
 
 **boolean / 결측 (`missing`)**
 
 | 항목 | 실제 | 설정 |
 |---|---|---|
-| `is_homegrown` true | 2,035 (33.9%) | `TrueRatio = 0.35` ✅ |
-| `secondary_positions` 없음 | 591 (9.8%) | `MissingRatio = 0.10` ✅ |
-| `tags` 없음 | 177 (3.0%) | `MissingRatio = 0.03` ✅ |
+| `is_homegrown` true | 2,035 (33.9%) | `TrueRatio = 0.35` 일치 |
+| `secondary_positions` 없음 | 591 (9.8%) | `MissingRatio = 0.10` 일치 |
+| `tags` 없음 | 177 (3.0%) | `MissingRatio = 0.03` 일치 |
 
 전 항목이 설정값대로 나왔다.
 
